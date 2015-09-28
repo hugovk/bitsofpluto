@@ -128,7 +128,7 @@ def bitsofpluto(pluto_filename):
             break
     outfile = os.path.join(tempfile.gettempdir(), "bitofpluto.jpg")
     print("outfile: " + outfile)
-    bit_of_pluto.save(outfile)
+    bit_of_pluto.save(outfile, quality=95)
     return outfile
 
 
