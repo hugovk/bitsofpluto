@@ -18,6 +18,8 @@ import yaml
 
 WIDTHS = [600, 800, 1000, 1200, 2000]
 
+WORLD_BBOX = [-90, -180, 90, 180]
+
 
 def load_yaml(filename):
     """
@@ -35,6 +37,14 @@ def load_yaml(filename):
             'consumer_key', 'consumer_secret'}:
         sys.exit("Twitter credentials missing from YAML: " + filename)
     return data
+
+
+def random_point_in(bbox):
+    """Given a bounding box of (swlat, swlon, nelat, nelon),
+     return random (lat, long)"""
+    lat = random.uniform(bbox[0], bbox[2])
+    long = random.uniform(bbox[1], bbox[3])
+    return (lat, long)
 
 
 def tweet_it(string, credentials, image=None):
@@ -71,8 +81,11 @@ def tweet_it(string, credentials, image=None):
         else:
             id_img = None  # Does t.statuses.update work with this?
 
+        lat, long = random_point_in(WORLD_BBOX)
         result = t.statuses.update(
-            status=string, media_ids=id_img)
+            status=string, media_ids=id_img,
+            lat=lat, long=long,
+            display_coordinates=True)
 
         url = "http://twitter.com/" + \
             result['user']['screen_name'] + "/status/" + result['id_str']
