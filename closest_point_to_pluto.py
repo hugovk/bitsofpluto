@@ -28,9 +28,7 @@ def closest_point_to_pluto():
             yield r
             r += step
 
-    def calc_best(min_lat=-90, max_lat=90,
-                  min_lon=-180, max_lon=180,
-                  step=10):
+    def calc_best(min_lat=-90, max_lat=90, min_lon=-180, max_lon=180, step=10):
         """Check a bunch of lat/lon points and find the one where
         Pluto's observed altitude is closest to 90 degrees"""
         best_alt = 0
@@ -38,8 +36,8 @@ def closest_point_to_pluto():
         best_lat = None
         best_lon = None
 
-        for lat in drange(min_lat, max_lat+1, step):
-            for lon in drange(min_lon, max_lon+1, step):
+        for lat in drange(min_lat, max_lat + 1, step):
+            for lon in drange(min_lon, max_lon + 1, step):
                 obs.lon = str(lon)
                 obs.lat = str(lat)
                 obs.date = now
@@ -59,12 +57,17 @@ def closest_point_to_pluto():
     best_lat, best_lon = calc_best()
     last_step = 10
     for step in [1, 0.1, 0.01]:
-        best_lat, best_lon = calc_best(best_lat-last_step, best_lat+last_step,
-                                       best_lon-last_step, best_lon+last_step,
-                                       step)
+        best_lat, best_lon = calc_best(
+            best_lat - last_step,
+            best_lat + last_step,
+            best_lon - last_step,
+            best_lon + last_step,
+            step,
+        )
         last_step = step
 
     return best_lat, best_lon
+
 
 if __name__ == "__main__":
     lat, lon = closest_point_to_pluto()

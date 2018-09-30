@@ -33,8 +33,11 @@ def load_yaml(filename):
     data = yaml.safe_load(f)
     f.close()
     if not data.viewkeys() >= {
-            'access_token', 'access_token_secret',
-            'consumer_key', 'consumer_secret'}:
+        "access_token",
+        "access_token_secret",
+        "consumer_key",
+        "consumer_secret",
+    }:
         sys.exit("Twitter credentials missing from YAML: " + filename)
     return data
 
@@ -48,10 +51,11 @@ def tweet_it(string, credentials, image=None):
     # https://dev.twitter.com/apps/new
     # Store credentials in YAML file
     auth = twitter.OAuth(
-        credentials['access_token'],
-        credentials['access_token_secret'],
-        credentials['consumer_key'],
-        credentials['consumer_secret'])
+        credentials["access_token"],
+        credentials["access_token_secret"],
+        credentials["consumer_key"],
+        credentials["consumer_secret"],
+    )
     t = twitter.Twitter(auth=auth)
 
     print("TWEETING THIS:\n", string)
@@ -67,20 +71,26 @@ def tweet_it(string, credentials, image=None):
             # First just read images from the web or from files the regular way
             with open(image, "rb") as imagefile:
                 imagedata = imagefile.read()
-            t_up = twitter.Twitter(domain='upload.twitter.com',
-                                   auth=auth)
+            t_up = twitter.Twitter(domain="upload.twitter.com", auth=auth)
             id_img = t_up.media.upload(media=imagedata)["media_id_string"]
         else:
             id_img = None  # Does t.statuses.update work with this?
 
         lat, long = closest_point_to_pluto.closest_point_to_pluto()
         result = t.statuses.update(
-            status=string, media_ids=id_img,
-            lat=lat, long=long,
-            display_coordinates=True)
+            status=string,
+            media_ids=id_img,
+            lat=lat,
+            long=long,
+            display_coordinates=True,
+        )
 
-        url = "http://twitter.com/" + \
-            result['user']['screen_name'] + "/status/" + result['id_str']
+        url = (
+            "http://twitter.com/"
+            + result["user"]["screen_name"]
+            + "/status/"
+            + result["id_str"]
+        )
         print("Tweeted:\n" + url)
         if not args.no_web:
             webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
@@ -92,7 +102,7 @@ def bitsofpluto(pluto_filename):
     print(pluto.size)
     while True:
         width = random.choice(WIDTHS)
-        height = width * 3/4
+        height = width * 3 / 4
         print("width, height:", width, height)
         x = random.randrange(0, pluto.width - width + 1)
         y = random.randrange(0, pluto.height - height + 1)
@@ -101,25 +111,24 @@ def bitsofpluto(pluto_filename):
         bit_of_pluto = pluto.crop((x, y, x + width, y + height))
         t = 0
         l = 0
-        b = bit_of_pluto.height-1
-        r = bit_of_pluto.width-1
-        points = [(l, t),
-                  (r, t),
-                  (r/2, t),
-
-                  (l, b/2),
-                  (r, b/2),
-                  (r/2, b/2),
-
-                  (l, b),
-                  (r, b),
-                  (r/2, b),
-                  ]
+        b = bit_of_pluto.height - 1
+        r = bit_of_pluto.width - 1
+        points = [
+            (l, t),
+            (r, t),
+            (r / 2, t),
+            (l, b / 2),
+            (r, b / 2),
+            (r / 2, b / 2),
+            (l, b),
+            (r, b),
+            (r / 2, b),
+        ]
         total_brightness = 0
         total_dark_points = 0
         for point in points:
             r, g, b = bit_of_pluto.getpixel(point)
-            brightness = sum([r, g, b])/3  # 0 is black) and 255 is white
+            brightness = sum([r, g, b]) / 3  # 0 is black and 255 is white
             print("r, g, b, brightness: ", r, g, b, brightness)
             total_brightness += brightness
             if brightness < 10:
@@ -140,22 +149,32 @@ def bitsofpluto(pluto_filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Tweeting a different bit of Pluto every six hours.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument(
-        '-y', '--yaml',
-        default='M:/bin/data/bitsofpluto.yaml',
-        help="YAML file location containing Twitter keys and secrets")
+        "-y",
+        "--yaml",
+        default="M:/bin/data/bitsofpluto.yaml",
+        help="YAML file location containing Twitter keys and secrets",
+    )
     parser.add_argument(
-        '-nw', '--no-web', action='store_true',
-        help="Don't open a web browser to show the tweeted tweet")
+        "-nw",
+        "--no-web",
+        action="store_true",
+        help="Don't open a web browser to show the tweeted tweet",
+    )
     parser.add_argument(
-        '-x', '--test', action='store_true',
-        help="Test mode: go through the motions but don't tweet anything")
+        "-x",
+        "--test",
+        action="store_true",
+        help="Test mode: go through the motions but don't tweet anything",
+    )
     parser.add_argument(
-        '-p', '--pluto',
-        default='M:/bin/data/pluto/'
-                'crop_p_color2_enhanced_release.7000x7000.png',
-        help="Path to a big photo of Pluto")
+        "-p",
+        "--pluto",
+        default="M:/bin/data/pluto/crop_p_color2_enhanced_release.7000x7000.png",
+        help="Path to a big photo of Pluto",
+    )
     args = parser.parse_args()
 
     credentials = load_yaml(args.yaml)
