@@ -6,17 +6,19 @@ Photo by NASA's New Horizons spacecraft.
 https://www.nasa.gov/image-feature/the-rich-color-variations-of-pluto/…
 """
 from __future__ import print_function
-from PIL import Image
+
 import argparse
-import random
 import os.path
+import random
 import sys
 import tempfile
-import twitter
 import webbrowser
-import yaml
+
+import twitter  # pip install twitter
+import yaml  # pip install PyYAML
 
 import closest_point_to_pluto
+from PIL import Image  # pip install pillow
 
 WIDTHS = [600, 800, 1000, 1200, 2000]
 
