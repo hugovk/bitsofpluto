@@ -109,20 +109,20 @@ def bitsofpluto(pluto_filename):
         print("x, y: ", x, y)
         print("x + width, y + height: ", x + width, y + height)
         bit_of_pluto = pluto.crop((x, y, x + width, y + height))
-        t = 0
-        l = 0
-        b = bit_of_pluto.height - 1
-        r = bit_of_pluto.width - 1
+        top = 0
+        left = 0
+        bottom = bit_of_pluto.height - 1
+        right = bit_of_pluto.width - 1
         points = [
-            (l, t),
-            (r, t),
-            (r / 2, t),
-            (l, b / 2),
-            (r, b / 2),
-            (r / 2, b / 2),
-            (l, b),
-            (r, b),
-            (r / 2, b),
+            (left, top),
+            (right, top),
+            (right / 2, top),
+            (left, bottom / 2),
+            (right, bottom / 2),
+            (right / 2, bottom / 2),
+            (left, bottom),
+            (right, bottom),
+            (right / 2, bottom),
         ]
         total_brightness = 0
         total_dark_points = 0
