@@ -24,3 +24,6 @@ script:
  # Static analysis
  - flake8 --statistics --count
  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then black --check --diff .; fi
+
+ # Dummy run
+ - python bitsofpluto.py --help
