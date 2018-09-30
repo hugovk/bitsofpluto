@@ -8,7 +8,7 @@ Or thereabouts.
 http://astronomy.stackexchange.com/a/13318/4166
 """
 from __future__ import print_function
-import ephem
+import ephem  # pip install pyephem
 import webbrowser
 
 NINETY = ephem.degrees(90)

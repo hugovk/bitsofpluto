@@ -17,6 +17,7 @@ matrix:
 
 install:
  - pip install -U pip
+ - pip install -U -r requirements.txt
  - pip install -U flake8
  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then pip install -U black; fi
 
