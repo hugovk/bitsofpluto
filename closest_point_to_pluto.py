@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding: utf-8
 """
 Find the point on Earth closest to Pluto right now.
 
@@ -7,7 +6,6 @@ Or thereabouts.
 
 http://astronomy.stackexchange.com/a/13318/4166
 """
-from __future__ import print_function
 import ephem  # pip install pyephem
 import webbrowser
 
