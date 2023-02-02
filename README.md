@@ -1,8 +1,9 @@
 # [@bitsofpluto](https://twitter.com/bitsofpluto)
 
-[![Build Status](https://travis-ci.org/hugovk/bitsofpluto.svg?branch=master)](https://travis-ci.org/hugovk/bitsofpluto)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Test](https://github.com/hugovk/bitsofpluto/actions/workflows/test.yml/badge.svg)](https://github.com/hugovk/bitsofpluto/actions/workflows/test.yml)
+[![Code style: Black](https://img.shields.io/badge/code%20style-Black-000000.svg)](https://github.com/psf/black)
 
-Twitterbot. Tweets a different bit of Pluto every six hours. 
+Twitterbot. Tweets a different bit of Pluto every six hours.
 
-See the Twitter bot in action at **[![](https://abs.twimg.com/favicons/favicon.ico)@bitsofpluto](https://twitter.com/bitsofpluto)**.
+See the Twitter bot in action at
+**[![](https://abs.twimg.com/favicons/favicon.ico)@bitsofpluto](https://twitter.com/bitsofpluto)**.
