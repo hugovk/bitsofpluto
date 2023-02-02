@@ -33,8 +33,7 @@ def load_yaml(filename):
     with open(filename) as f:
         data = yaml.safe_load(f)
 
-    keys = data.viewkeys() if sys.version_info.major == 2 else data.keys()
-    if not keys >= {
+    if not data.keys() >= {
         "access_token",
         "access_token_secret",
         "consumer_key",
