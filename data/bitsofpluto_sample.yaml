@@ -1,4 +1,3 @@
-consumer_key: TODO
-consumer_secret: TODO
-access_token: TODO
-access_token_secret: TODO
+mastodon_client_id: TODO
+mastodon_client_secret: TODO
+mastodon_access_token: TODO

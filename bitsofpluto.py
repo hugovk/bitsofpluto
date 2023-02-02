@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Twitter bot. Tweeting a different bit of Pluto every six hours.
+Mastodon bot. Tooting a different bit of Pluto every six hours.
 Photo by NASA's New Horizons spacecraft.
 https://www.nasa.gov/image-feature/the-rich-color-variations-of-pluto/…
 """
@@ -13,90 +13,83 @@ import sys
 import tempfile
 import webbrowser
 
-import twitter  # pip install twitter
 import yaml  # pip install PyYAML
+from mastodon import Mastodon  # pip install Mastodon.py
 from PIL import Image  # pip install pillow
 
-import closest_point_to_pluto
+# No geolocation on Mastodon
+# https://github.com/mastodon/mastodon/issues/8340
+# import closest_point_to_pluto
 
 WIDTHS = [600, 800, 1000, 1200, 2000]
 
 
-def load_yaml(filename):
+def load_yaml(filename: str) -> dict[str, str]:
     """
     File should contain:
-    consumer_key: TODO_ENTER_YOURS
-    consumer_secret: TODO_ENTER_YOURS
-    access_token: TODO_ENTER_YOURS
-    access_token_secret: TODO_ENTER_YOURS
+    mastodon_client_id: TODO_ENTER_YOURS
+    mastodon_client_secret: TODO_ENTER_YOURS
+    mastodon_access_token: TODO_ENTER_YOURS
     """
     with open(filename) as f:
         data = yaml.safe_load(f)
 
     if not data.keys() >= {
-        "access_token",
-        "access_token_secret",
-        "consumer_key",
-        "consumer_secret",
+        "mastodon_client_id",
+        "mastodon_client_secret",
+        "mastodon_access_token",
     }:
-        sys.exit("Twitter credentials missing from YAML: " + filename)
+        sys.exit(f"Mastodon credentials missing from YAML: {filename}")
     return data
 
 
-def tweet_it(string, credentials, image=None):
-    """Tweet string using credentials"""
-    if len(string) <= 0:
+def toot_it(
+    status: str,
+    credentials: dict[str, str],
+    image_path: str = None,
+    *,
+    test: bool = False,
+    no_web: bool = False,
+) -> None:
+    """Toot using credentials"""
+    if len(status) <= 0:
         return
 
-    # Create and authorise an app with (read and) write access at:
-    # https://dev.twitter.com/apps/new
+    # Create and authorise an app with (read and) write access following:
+    # https://gist.github.com/aparrish/661fca5ce7b4882a8c6823db12d42d26
     # Store credentials in YAML file
-    auth = twitter.OAuth(
-        credentials["access_token"],
-        credentials["access_token_secret"],
-        credentials["consumer_key"],
-        credentials["consumer_secret"],
+    api = Mastodon(
+        credentials["mastodon_client_id"],
+        credentials["mastodon_client_secret"],
+        credentials["mastodon_access_token"],
+        api_base_url="https://botsin.space",
     )
-    t = twitter.Twitter(auth=auth)
 
-    print("TWEETING THIS:\n", string)
+    print("TOOTING THIS:\n", status)
 
-    if args.test:
-        print("(Test mode, not actually tweeting)")
+    if test:
+        print("(Test mode, not actually tooting)")
     else:
-        if image:
+        media_ids = []
+        if image_path:
             print("Upload image")
 
-            # Send images along with your tweets.
-            # First just read images from the web or from files the regular way
-            with open(image, "rb") as imagefile:
-                imagedata = imagefile.read()
-            t_up = twitter.Twitter(domain="upload.twitter.com", auth=auth)
-            id_img = t_up.media.upload(media=imagedata)["media_id_string"]
-        else:
-            id_img = None  # Does t.statuses.update work with this?
+            media = api.media_post(media_file=image_path)
+            media_ids.append(media["id"])
 
-        lat, long = closest_point_to_pluto.closest_point_to_pluto()
-        result = t.statuses.update(
-            status=string,
-            media_ids=id_img,
-            lat=lat,
-            long=long,
-            display_coordinates=True,
-        )
+        # No geolocation on Mastodon
+        # https://github.com/mastodon/mastodon/issues/8340
+        # lat, long = closest_point_to_pluto.closest_point_to_pluto()
 
-        url = (
-            "http://twitter.com/"
-            + result["user"]["screen_name"]
-            + "/status/"
-            + result["id_str"]
-        )
-        print("Tweeted:\n" + url)
-        if not args.no_web:
+        toot = api.status_post(status, media_ids=media_ids, visibility="public")
+
+        url = toot["url"]
+        print("Tooted:\n" + url)
+        if not no_web:
             webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
 
 
-def bitsofpluto(pluto_filename):
+def bitsofpluto(pluto_filename: str) -> str:
     """Get a bit of Pluto"""
     pluto = Image.open(pluto_filename)
     print(pluto.size)
@@ -146,28 +139,28 @@ def bitsofpluto(pluto_filename):
     return outfile
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Tweeting a different bit of Pluto every six hours.",
+        description="Tooting a different bit of Pluto every six hours.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "-y",
         "--yaml",
         default="M:/bin/data/bitsofpluto.yaml",
-        help="YAML file location containing Twitter keys and secrets",
+        help="YAML file location containing Mastodon keys and secrets",
     )
     parser.add_argument(
         "-nw",
         "--no-web",
         action="store_true",
-        help="Don't open a web browser to show the tweeted tweet",
+        help="Don't open a web browser to show the tooted toot",
     )
     parser.add_argument(
         "-x",
         "--test",
         action="store_true",
-        help="Test mode: go through the motions but don't tweet anything",
+        help="Test mode: go through the motions but don't toot anything",
     )
     parser.add_argument(
         "-p",
@@ -179,10 +172,12 @@ if __name__ == "__main__":
 
     credentials = load_yaml(args.yaml)
 
-    image = bitsofpluto(args.pluto)
+    image_path = bitsofpluto(args.pluto)
 
-    tweet = "A bit of Pluto"
+    status = "A bit of Pluto"
 
-    tweet_it(tweet, credentials, image)
+    toot_it(status, credentials, image_path, test=args.test, no_web=args.no_web)
 
-# End of file
+
+if __name__ == "__main__":
+    main()
