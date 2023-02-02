@@ -6,14 +6,16 @@ Or thereabouts.
 
 http://astronomy.stackexchange.com/a/13318/4166
 """
-import ephem  # pip install pyephem
+from __future__ import annotations
+
 import webbrowser
+
+import ephem  # pip install pyephem
 
 NINETY = ephem.degrees(90)
 
 
 def closest_point_to_pluto():
-
     pluto = ephem.Pluto()
     obs = ephem.Observer()
     now = ephem.now()

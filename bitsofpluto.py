@@ -4,6 +4,7 @@ Twitter bot. Tweeting a different bit of Pluto every six hours.
 Photo by NASA's New Horizons spacecraft.
 https://www.nasa.gov/image-feature/the-rich-color-variations-of-pluto/…
 """
+from __future__ import annotations
 
 import argparse
 import os.path
@@ -14,9 +15,9 @@ import webbrowser
 
 import twitter  # pip install twitter
 import yaml  # pip install PyYAML
+from PIL import Image  # pip install pillow
 
 import closest_point_to_pluto
-from PIL import Image  # pip install pillow
 
 WIDTHS = [600, 800, 1000, 1200, 2000]
 
@@ -44,7 +45,7 @@ def load_yaml(filename):
 
 
 def tweet_it(string, credentials, image=None):
-    """ Tweet string using credentials """
+    """Tweet string using credentials"""
     if len(string) <= 0:
         return
 
@@ -64,7 +65,6 @@ def tweet_it(string, credentials, image=None):
     if args.test:
         print("(Test mode, not actually tweeting)")
     else:
-
         if image:
             print("Upload image")
 
@@ -98,7 +98,7 @@ def tweet_it(string, credentials, image=None):
 
 
 def bitsofpluto(pluto_filename):
-    """ Get a bit of Pluto """
+    """Get a bit of Pluto"""
     pluto = Image.open(pluto_filename)
     print(pluto.size)
     while True:
