@@ -165,7 +165,7 @@ def main() -> None:
     parser.add_argument(
         "-p",
         "--pluto",
-        default="M:/bin/data/pluto/crop_p_color2_enhanced_release.7000x7000.png",
+        default="data/crop_p_color2_enhanced_release.7000x7000.png",
         help="Path to a big photo of Pluto",
     )
     args = parser.parse_args()
