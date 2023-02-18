@@ -69,24 +69,25 @@ def toot_it(
 
     if test:
         print("(Test mode, not actually tooting)")
-    else:
-        media_ids = []
-        if image_path:
-            print("Upload image")
+        return
 
-            media = api.media_post(media_file=image_path)
-            media_ids.append(media["id"])
+    media_ids = []
+    if image_path:
+        print("Upload image")
 
-        # No geolocation on Mastodon
-        # https://github.com/mastodon/mastodon/issues/8340
-        # lat, long = closest_point_to_pluto.closest_point_to_pluto()
+        media = api.media_post(media_file=image_path)
+        media_ids.append(media["id"])
 
-        toot = api.status_post(status, media_ids=media_ids, visibility="public")
+    # No geolocation on Mastodon
+    # https://github.com/mastodon/mastodon/issues/8340
+    # lat, long = closest_point_to_pluto.closest_point_to_pluto()
 
-        url = toot["url"]
-        print("Tooted:\n" + url)
-        if not no_web:
-            webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
+    toot = api.status_post(status, media_ids=media_ids, visibility="public")
+
+    url = toot["url"]
+    print("Tooted:\n" + url)
+    if not no_web:
+        webbrowser.open(url, new=2)  # 2 = open in a new tab, if possible
 
 
 def bitsofpluto(pluto_filename: str) -> str:
