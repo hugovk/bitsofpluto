@@ -98,8 +98,8 @@ def bitsofpluto(pluto_filename: str) -> str:
         width = random.choice(WIDTHS)
         height = width * 3 / 4
         print("width, height:", width, height)
-        x = random.randrange(0, pluto.width - width + 1)
-        y = random.randrange(0, pluto.height - height + 1)
+        x = random.randrange(0, int(pluto.width - width + 1))
+        y = random.randrange(0, int(pluto.height - height + 1))
         print("x, y: ", x, y)
         print("x + width, y + height: ", x + width, y + height)
         bit_of_pluto = pluto.crop((x, y, x + width, y + height))
