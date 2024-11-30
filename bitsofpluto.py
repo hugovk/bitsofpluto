@@ -62,7 +62,7 @@ def toot_it(
         credentials["mastodon_client_id"],
         credentials["mastodon_client_secret"],
         credentials["mastodon_access_token"],
-        api_base_url="https://botsin.space",
+        api_base_url="https://mas.to",
     )
 
     print("TOOTING THIS:\n", status)

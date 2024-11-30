@@ -1,4 +1,4 @@
-# [@bitsofpluto](https://botsin.space/@bitsofpluto)
+# [@bitsofpluto](https://mas.to/@bitsofpluto)
 
 [![Test](https://github.com/hugovk/bitsofpluto/actions/workflows/test.yml/badge.svg)](https://github.com/hugovk/bitsofpluto/actions/workflows/test.yml)
 [![Python: 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -7,4 +7,4 @@
 Mastodonbot. Toots a different bit of Pluto every six hours.
 
 See the Mastodon bot in action at
-**[![](https://botsin.space/favicon.ico)@bitsofpluto](https://botsin.space/@bitsofpluto)**.
+**[![](https://mas.to/favicon.ico)@bitsofpluto](https://mas.to/@bitsofpluto)**.
