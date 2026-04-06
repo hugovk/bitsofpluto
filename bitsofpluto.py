@@ -4,6 +4,7 @@ Mastodon bot. Tooting a different bit of Pluto every six hours.
 Photo by NASA's New Horizons spacecraft.
 https://www.nasa.gov/image-feature/the-rich-color-variations-of-pluto/…
 """
+
 from __future__ import annotations
 
 import argparse
