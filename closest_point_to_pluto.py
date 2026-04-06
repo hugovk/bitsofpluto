@@ -6,6 +6,7 @@ Or thereabouts.
 
 http://astronomy.stackexchange.com/a/13318/4166
 """
+
 from __future__ import annotations
 
 import webbrowser
