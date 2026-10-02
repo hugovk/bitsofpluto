@@ -2,3 +2,4 @@ Mastodon.py
 pillow
 # pyephem
 PyYAML
+stamina
