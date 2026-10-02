@@ -67,7 +67,7 @@ jobs:
     # Re-enabling the workflow, even though it's already enabled, resets that.
     needs: toot
     if: always() && github.event_name == 'schedule'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       actions: write # to re-enable this workflow
     steps:
