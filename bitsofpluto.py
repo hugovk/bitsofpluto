@@ -14,8 +14,9 @@ import sys
 import tempfile
 import webbrowser
 
+import stamina  # pip install stamina
 import yaml  # pip install PyYAML
-from mastodon import Mastodon  # pip install Mastodon.py
+from mastodon import Mastodon, MastodonError  # pip install Mastodon.py
 from PIL import Image  # pip install pillow
 
 # No geolocation on Mastodon
@@ -42,6 +43,23 @@ def load_yaml(filename: str) -> dict[str, str]:
     }:
         sys.exit(f"Mastodon credentials missing from YAML: {filename}")
     return data
+
+
+# Retry on Mastodon errors such as a flaky server
+retry = stamina.retry(
+    on=MastodonError, attempts=3, wait_initial=30, wait_max=60, timeout=None
+)
+
+
+def print_retry(details: stamina.instrumentation.RetryDetails) -> None:
+    """Log scheduled retries to stdout"""
+    print(
+        f"{details.name} failed with {details.caused_by!r}, "
+        f"retry {details.retry_num} in {details.wait_for:.0f}s"
+    )
+
+
+stamina.instrumentation.set_on_retry_hooks([print_retry])
 
 
 def toot_it(
@@ -76,14 +94,14 @@ def toot_it(
     if image_path:
         print("Upload image")
 
-        media = api.media_post(media_file=image_path)
+        media = retry(api.media_post)(media_file=image_path)
         media_ids.append(media["id"])
 
     # No geolocation on Mastodon
     # https://github.com/mastodon/mastodon/issues/8340
     # lat, long = closest_point_to_pluto.closest_point_to_pluto()
 
-    toot = api.status_post(status, media_ids=media_ids, visibility="public")
+    toot = retry(api.status_post)(status, media_ids=media_ids, visibility="public")
 
     url = toot["url"]
     print("Tooted:\n" + url)

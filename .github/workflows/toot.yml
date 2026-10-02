@@ -1,0 +1,63 @@
+name: Toot
+
+on:
+  schedule:
+    # Every six hours at 03:07, 09:07, 15:07 and 21:07 UTC
+    - cron: "7 3,9,15,21 * * *"
+  workflow_dispatch:
+    inputs:
+      toot:
+        description: "Really toot (untick for a dry run)"
+        type: boolean
+        default: true
+
+env:
+  FORCE_COLOR: 1
+
+permissions: {}
+
+concurrency:
+  group: toot
+  cancel-in-progress: false
+
+jobs:
+  toot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # to check out the repo and the Pluto image
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.x"
+
+      - name: Install uv
+        uses: hynek/setup-cached-uv@34e35d30f1ebc7421a5cc733bca38dcc62603960 # v2.6.0
+
+      - name: Install requirements
+        run: |
+          uv venv
+          uv pip install -r requirements.txt
+
+      - name: Toot a bit of Pluto
+        env:
+          # The contents of the credentials YAML file, see load_yaml() in bitsofpluto.py
+          BITSOFPLUTO_YAML: ${{ secrets.BITSOFPLUTO_YAML }}
+          TOOT: ${{ github.event_name == 'schedule' || inputs.toot }}
+        run: |
+          yaml="$RUNNER_TEMP/bitsofpluto.yaml"
+          if [ -n "$BITSOFPLUTO_YAML" ]; then
+            printf '%s\n' "$BITSOFPLUTO_YAML" > "$yaml"
+          else
+            echo "::warning::BITSOFPLUTO_YAML secret not set, using sample credentials"
+            yaml=data/bitsofpluto_sample.yaml
+          fi
+          args=(--yaml "$yaml" --no-web)
+          if [ "$TOOT" != "true" ]; then
+            args+=(--test)
+          fi
+          uv run bitsofpluto.py "${args[@]}"
