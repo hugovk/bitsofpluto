@@ -8,3 +8,10 @@ Mastodonbot. Toots a different bit of Pluto every six hours.
 
 See the Mastodon bot in action at
 **[![](https://mas.to/favicon.ico)@bitsofpluto](https://mas.to/@bitsofpluto)**.
+
+## How it runs
+
+[`toot.yml`](.github/workflows/toot.yml) runs on GitHub Actions every six hours. The
+Mastodon credentials YAML is stored in the `BITSOFPLUTO_YAML` repository secret. To run
+it by hand, or for a dry run that doesn't toot, use "Run workflow" on the
+[Actions tab](https://github.com/hugovk/bitsofpluto/actions/workflows/toot.yml).
